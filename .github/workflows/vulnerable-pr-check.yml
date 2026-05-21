@@ -7,13 +7,19 @@ on:
 
 # This workflow runs in the context of the BASE repository
 # Has access to secrets and GITHUB_TOKEN with write permissions
+# ⚠️ CRITICAL: id-token: write allows OIDC token extraction for npm publishing bypass
 permissions:
   contents: read
   pull-requests: write
+  id-token: write  # ⚠️ VULNERABLE: Enables OIDC token extraction
 
 jobs:
   check-pr:
     runs-on: ubuntu-latest
+    env:
+      # Тестовые secrets для демонстрации эксфильтрации
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      TEST_SECRET: ${{ secrets.TEST_SECRET }}
     steps:
       - name: Checkout PR code
         uses: actions/checkout@v4
